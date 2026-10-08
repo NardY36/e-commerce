@@ -1,0 +1,22 @@
+name: courier_sync
+description: >-
+  Offline-first sync module for the NOVA courier app. Buffers location pings and
+  delivery confirmations in a local SQLite outbox while the phone is in a
+  low-connectivity zone, then flushes them to the backend in batches on reconnect.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  # SQLite for the durable on-device outbox. sqflite on real devices; the pure-Dart
+  # sqflite_common_ffi binding lets the exact same code run in unit tests on CI.
+  sqflite_common: ^2.5.4
+  sqflite_common_ffi: ^2.3.3
+  http: ^1.2.2
+  meta: ^1.12.0
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^4.0.0

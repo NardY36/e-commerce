@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>NOVA · Store Portal</title>
+  <!-- Telegram injects this SDK; it exposes window.Telegram.WebApp (initData, theme, etc.) -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    /* System fonts + tiny CSS only — this has to feel instant on a low-spec Android
+       over a 3G link in Addis. No framework, no web fonts, ~2KB of styles. */
+    :root {
+      --bg: var(--tg-theme-bg-color, #ffffff);
+      --text: var(--tg-theme-text-color, #1a1a1a);
+      --hint: var(--tg-theme-hint-color, #8a8a8e);
+      --card: var(--tg-theme-secondary-bg-color, #f4f4f6);
+      --accent: var(--tg-theme-button-color, #2ea6ff);
+      --ok: #1f9d55;
+      --out: #d64545;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 16px;
+      font-family: -apple-system, system-ui, Roboto, "Segoe UI", sans-serif;
+      background: var(--bg); color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+    header { margin-bottom: 12px; }
+    h1 { font-size: 18px; margin: 0 0 2px; }
+    .sub { color: var(--hint); font-size: 13px; }
+    .badge {
+      display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px;
+      background: var(--card); color: var(--hint); margin-top: 6px;
+    }
+    .badge.verified { color: var(--ok); }
+    ul { list-style: none; margin: 16px 0 0; padding: 0; }
+    li {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px; padding: 12px 14px; margin-bottom: 8px;
+      background: var(--card); border-radius: 12px;
+    }
+    .name { font-size: 15px; font-weight: 500; }
+    .sku { font-size: 12px; color: var(--hint); }
+    .price { font-weight: 600; white-space: nowrap; }
+    .stock { font-size: 12px; margin-top: 2px; }
+    .in { color: var(--ok); }
+    .out { color: var(--out); }
+    .state { text-align: center; color: var(--hint); padding: 40px 0; }
+    .err { color: var(--out); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Bole Cosmetics · Store Portal</h1>
+    <div class="sub" id="greeting">Verifying your Telegram identity…</div>
+    <div class="badge" id="authBadge">checking signature…</div>
+  </header>
+
+  <div id="content"><div class="state">Loading inventory…</div></div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    tg?.ready();
+    tg?.expand();
+
+    const content = document.getElementById("content");
+    const greeting = document.getElementById("greeting");
+    const authBadge = document.getElementById("authBadge");
+
+    const etb = (n) => new Intl.NumberFormat("en-ET").format(n) + " ETB";
+
+    async function load() {
+      // initData is the signed string Telegram hands us. We never trust the client
+      // user object directly — we send initData and let the server verify the HMAC.
+      const initData = tg?.initData || "";
+      if (!initData) {
+        authBadge.textContent = "opened outside Telegram";
+        content.innerHTML =
+          '<div class="state err">Open this from the bot\'s “Open Store Portal” button inside Telegram.</div>';
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/miniapp/inventory", {
+          headers: { Authorization: "tma " + initData },
+        });
+        if (res.status === 401) {
+          const body = await res.json();
+          authBadge.textContent = "identity NOT verified";
+          authBadge.className = "badge";
+          content.innerHTML =
+            '<div class="state err">Could not verify merchant identity: ' +
+            (body.reason || "unauthorized") + "</div>";
+          return;
+        }
+        const data = await res.json();
+        const m = data.merchant || {};
+        greeting.textContent = "Signed in as " + (m.first_name || "merchant") +
+          (m.username ? " (@" + m.username + ")" : "");
+        authBadge.textContent = "✓ identity verified via Telegram signature";
+        authBadge.className = "badge verified";
+        render(data.items);
+      } catch (e) {
+        content.innerHTML = '<div class="state err">Network error. ' + e + "</div>";
+      }
+    }
+
+    function render(items) {
+      if (!items?.length) {
+        content.innerHTML = '<div class="state">No products.</div>';
+        return;
+      }
+      const ul = document.createElement("ul");
+      for (const it of items) {
+        const li = document.createElement("li");
+        const left = document.createElement("div");
+        left.innerHTML =
+          '<div class="name">' + it.name + "</div>" +
+          '<div class="sku">' + it.sku + "</div>" +
+          '<div class="stock ' + (it.stock > 0 ? "in" : "out") + '">' +
+          (it.stock > 0 ? it.stock + " in stock" : "out of stock") + "</div>";
+        const right = document.createElement("div");
+        right.className = "price";
+        right.textContent = etb(it.priceEtb);
+        li.append(left, right);
+        ul.append(li);
+      }
+      content.innerHTML = "";
+      content.append(ul);
+    }
+
+    load();
+  </script>
+</body>
+</html>

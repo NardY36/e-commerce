@@ -1,0 +1,40 @@
+services:
+  # PostgreSQL with the PostGIS extension — we store courier location pings as
+  # geography points so "which courier is nearest this Bole address" is a single
+  # indexed query instead of application-side haversine math.
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: nova-db
+    environment:
+      POSTGRES_USER: nova
+      POSTGRES_PASSWORD: nova
+      POSTGRES_DB: nova
+    ports:
+      - "5432:5432"
+    volumes:
+      - nova-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nova -d nova"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Redis backs the BullMQ payment queue. It is the durable buffer that lets us
+  # accept a customer's payment intent even while the Telebirr API is timing out.
+  redis:
+    image: redis:7-alpine
+    container_name: nova-redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - nova-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  nova-db-data:
+  nova-redis-data:
