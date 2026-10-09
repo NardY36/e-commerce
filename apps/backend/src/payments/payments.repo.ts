@@ -75,6 +75,27 @@ export async function createOrGetIntent(
   return { payment: existing!, created: false };
 }
 
+/**
+ * Payments that timed out, were parked as PENDING_VERIFY, and have not settled
+ * within `olderThanSeconds`. These are the long-tail cases where both the async
+ * webhook and the queue's retries failed to resolve the charge — the reconciler
+ * sweep re-queries the gateway for them so money is never left in limbo.
+ */
+export async function listStuckPendingVerify(
+  olderThanSeconds: number,
+  limit = 100,
+): Promise<Payment[]> {
+  const { rows } = await pool.query<PaymentRow>(
+    `SELECT * FROM payments
+      WHERE status = 'PENDING_VERIFY'
+        AND updated_at < now() - ($1 * interval '1 second')
+      ORDER BY updated_at ASC
+      LIMIT $2`,
+    [olderThanSeconds, limit],
+  );
+  return rows.map(toPayment);
+}
+
 export async function getByKey(idempotencyKey: string): Promise<Payment | null> {
   const { rows } = await pool.query<PaymentRow>(
     `SELECT * FROM payments WHERE idempotency_key = $1`,

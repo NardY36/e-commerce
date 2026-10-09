@@ -1,5 +1,7 @@
 # NOVA — Wellness Commerce Ops Layer for Addis Ababa
 
+![CI](https://github.com/NardY36/nova-platform/actions/workflows/ci.yml/badge.svg)
+
 A working prototype of the operational backbone for a wellness e-commerce platform
 built for the realities of Addis Ababa: a **Telegram-native merchant interface**,
 **payment processing that survives Telebirr downtime**, and **offline-first courier
@@ -117,7 +119,9 @@ graph TD
   `UNIQUE` DB key, a BullMQ `jobId`, and the gateway's own merchant reference. On a
   timeout the charge is parked as `PENDING_VERIFY` and reconciled asynchronously —
   **retries query status, they never re-initiate**, so a timed-out-but-successful
-  charge is never repeated. (See [Payment flow](#payment-resilience-flow) below.)
+  charge is never repeated. A periodic **reconciler sweep** (`payments/reconciler.ts`)
+  is the final backstop for anything the webhook and the queue's retries both miss.
+  (See [Payment flow](#payment-resilience-flow) below.)
 - **Offline Courier Sync.** A Dart/Flutter module (`packages/courier_sync/`) writes
   every location ping and delivery confirmation to a local **SQLite outbox** first,
   never blocking the UI on the network. On reconnect it **flushes in batches**, with

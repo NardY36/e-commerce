@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    name: Backend (type-check + tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4 # version comes from the "packageManager" field
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Type-check
+        run: pnpm --filter @nova/backend typecheck
+      - name: Unit tests
+        run: pnpm --filter @nova/backend test
+
+  courier_sync:
+    name: Courier sync (Dart tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/courier_sync
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - run: dart pub get
+      - name: Analyze
+        run: dart analyze
+      - name: Tests
+        run: dart test
