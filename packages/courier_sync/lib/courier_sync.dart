@@ -1,4 +1,4 @@
-/// Offline-first sync for the NOVA courier app.
+/// Offline-first sync for the E-Commerce courier app.
 ///
 /// Typical wiring in the Flutter app:
 /// ```dart
@@ -6,7 +6,7 @@
 /// await OutboxStore.createSchema(db);
 /// final service = CourierSyncService(
 ///   store: OutboxStore(db),
-///   api: HttpSyncApi(Uri.parse('https://api.nova.et/api/courier/pings')),
+///   api: HttpSyncApi(Uri.parse('https://api.ecommerce.et/api/courier/pings')),
 ///   connectivity: ConnectivityPlusAdapter(), // wraps connectivity_plus
 /// )..start();
 ///

@@ -1,6 +1,6 @@
 name: courier_sync
 description: >-
-  Offline-first sync module for the NOVA courier app. Buffers location pings and
+  Offline-first sync module for the E-Commerce courier app. Buffers location pings and
   delivery confirmations in a local SQLite outbox while the phone is in a
   low-connectivity zone, then flushes them to the backend in batches on reconnect.
 version: 0.1.0

@@ -1,6 +1,6 @@
-# NOVA — Wellness Commerce Ops Layer for Addis Ababa
+# E-Commerce — Wellness Retail Ops Layer for Addis Ababa
 
-![CI](https://github.com/NardY36/nova-platform/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/NardY36/e-commerce/actions/workflows/ci.yml/badge.svg)
 
 A working prototype of the operational backbone for a wellness e-commerce platform
 built for the realities of Addis Ababa: a **Telegram-native merchant interface**,
@@ -179,7 +179,7 @@ pnpm dev                      # migrates schema, starts API + worker (+ bot if t
 
 ### 3. See the payment resilience in action (no Telegram needed)
 ```bash
-pnpm --filter @nova/backend demo:payment
+pnpm --filter @ecommerce/backend demo:payment
 ```
 You'll watch the same payment get submitted twice (the duplicate is ignored),
 time out against Telebirr, park as `PENDING_VERIFY`, and reconcile to a single
@@ -187,7 +187,7 @@ time out against Telebirr, park as `PENDING_VERIFY`, and reconcile to a single
 
 ### 4. Tests
 ```bash
-pnpm --filter @nova/backend test        # initData HMAC validation
+pnpm --filter @ecommerce/backend test        # initData HMAC validation
 # Dart module (needs Flutter/Dart SDK):
 cd packages/courier_sync && dart pub get && dart test
 ```

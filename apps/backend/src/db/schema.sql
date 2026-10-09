@@ -1,4 +1,4 @@
--- NOVA schema. Safe to run repeatedly (idempotent DDL).
+-- E-Commerce schema. Safe to run repeatedly (idempotent DDL).
 CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE EXTENSION IF NOT EXISTS "pgcrypto"; -- gen_random_uuid()
 

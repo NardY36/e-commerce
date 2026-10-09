@@ -39,7 +39,7 @@ export async function sendOrderAlert(chatId: string | number, order: Order): Pro
 if (bot) {
   bot.command("start", async (ctx) => {
     await ctx.reply(
-      "NOVA merchant bot online.\n" +
+      "E-Commerce merchant bot online.\n" +
         `Your chat id is ${ctx.chat.id} — put it in MERCHANT_CHAT_ID to receive order alerts.\n` +
         "Send /neworder to simulate an incoming order.",
     );

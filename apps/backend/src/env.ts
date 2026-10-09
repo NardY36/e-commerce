@@ -16,7 +16,7 @@ const schema = z.object({
   TELEGRAM_BOT_TOKEN: z.string().optional().default(""),
   MERCHANT_CHAT_ID: z.string().optional().default(""),
 
-  DATABASE_URL: z.string().default("postgres://nova:nova@localhost:5432/nova"),
+  DATABASE_URL: z.string().default("postgres://ecommerce:ecommerce@localhost:5432/ecommerce"),
   REDIS_URL: z.string().default("redis://localhost:6379"),
 
   TELEBIRR_TIMEOUT_RATE: z.coerce.number().min(0).max(1).default(0.6),

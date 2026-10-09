@@ -18,9 +18,9 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Type-check
-        run: pnpm --filter @nova/backend typecheck
+        run: pnpm --filter @ecommerce/backend typecheck
       - name: Unit tests
-        run: pnpm --filter @nova/backend test
+        run: pnpm --filter @ecommerce/backend test
 
   courier_sync:
     name: Courier sync (Dart tests)

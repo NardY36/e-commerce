@@ -4,17 +4,17 @@ services:
   # indexed query instead of application-side haversine math.
   db:
     image: postgis/postgis:16-3.4
-    container_name: nova-db
+    container_name: ecommerce-db
     environment:
-      POSTGRES_USER: nova
-      POSTGRES_PASSWORD: nova
-      POSTGRES_DB: nova
+      POSTGRES_USER: ecommerce
+      POSTGRES_PASSWORD: ecommerce
+      POSTGRES_DB: ecommerce
     ports:
       - "5432:5432"
     volumes:
-      - nova-db-data:/var/lib/postgresql/data
+      - ecommerce-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U nova -d nova"]
+      test: ["CMD-SHELL", "pg_isready -U ecommerce -d ecommerce"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -23,12 +23,12 @@ services:
   # accept a customer's payment intent even while the Telebirr API is timing out.
   redis:
     image: redis:7-alpine
-    container_name: nova-redis
+    container_name: ecommerce-redis
     ports:
       - "6379:6379"
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
-      - nova-redis-data:/data
+      - ecommerce-redis-data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -36,5 +36,5 @@ services:
       retries: 10
 
 volumes:
-  nova-db-data:
-  nova-redis-data:
+  ecommerce-db-data:
+  ecommerce-redis-data:

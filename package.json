@@ -1,13 +1,13 @@
 {
-  "name": "nova-platform",
+  "name": "ecommerce-platform",
   "version": "0.1.0",
   "private": true,
-  "description": "NOVA — wellness commerce ops layer for Addis Ababa (Telegram merchant interface, resilient payments, offline courier sync)",
+  "description": "E-Commerce — wellness retail ops layer for Addis Ababa (Telegram merchant interface, resilient payments, offline courier sync)",
   "scripts": {
-    "dev": "pnpm --filter @nova/backend dev",
-    "build": "pnpm --filter @nova/backend build",
-    "migrate": "pnpm --filter @nova/backend migrate",
-    "seed:order": "pnpm --filter @nova/backend seed:order",
+    "dev": "pnpm --filter @ecommerce/backend dev",
+    "build": "pnpm --filter @ecommerce/backend build",
+    "migrate": "pnpm --filter @ecommerce/backend migrate",
+    "seed:order": "pnpm --filter @ecommerce/backend seed:order",
     "infra:up": "docker compose up -d",
     "infra:down": "docker compose down"
   },

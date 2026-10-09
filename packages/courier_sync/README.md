@@ -1,6 +1,6 @@
 # courier_sync
 
-Offline-first sync for the NOVA courier app. Buffers location pings and delivery
+Offline-first sync for the E-Commerce courier app. Buffers location pings and delivery
 confirmations in a local **SQLite outbox** while the courier is in a
 low-connectivity zone, then flushes them to the backend in **batches on reconnect**.
 
