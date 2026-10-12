@@ -7,7 +7,7 @@ built for the realities of Addis Ababa: a **Telegram-native merchant interface**
 **payment processing that survives Telebirr downtime**, and **offline-first courier
 tracking** for the city's low-connectivity zones.
 
-The guiding principle throughout is **pragmatism over over-engineering** — the whole
+The guiding principle throughout is **pragmatism over over-engineering** the whole
 stack is open-source building blocks (grammY, Express, BullMQ, Postgres/PostGIS,
 Redis) wired together cleanly, not infrastructure reinvented from scratch.
 
