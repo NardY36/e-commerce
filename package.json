@@ -8,6 +8,8 @@
     "build": "pnpm --filter @ecommerce/backend build",
     "migrate": "pnpm --filter @ecommerce/backend migrate",
     "seed:order": "pnpm --filter @ecommerce/backend seed:order",
+    "demo:payment": "pnpm --filter @ecommerce/backend demo:payment",
+    "test": "pnpm --filter @ecommerce/backend test",
     "infra:up": "docker compose up -d",
     "infra:down": "docker compose down"
   },
